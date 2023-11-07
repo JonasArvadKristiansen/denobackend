@@ -1,22 +1,34 @@
-import { serve } from "https://deno.land/std@0.204.0/http/server.ts";
+import { Application, Router } from "https://deno.land/x/oak@v12.6.1/mod.ts";
 
-const handler = async (_request: Request): Promise<Response> => {
-  const resp = await fetch("https://api.github.com/users/denoland", {
-    // The init object here has a headers object containing a
-    // header that indicates what type of response we accept.
-    // We're not specifying the method field since by default
-    // fetch makes a GET request.
-    headers: {
-      accept: "application/json",
-    },
-  });
+const app = new Application();
+const router = new Router();
 
-  return new Response(resp.body, {
-    status: resp.status,
-    headers: {
-      "content-type": "application/json",
-    },
-  });
-};
+router.get("/", (context) => {
+  context.response.body = "Welcome to index endpoint";
+});
 
-serve(handler);
+router.get("/login", (ctx) => {
+  ctx.response.body = "Welcome to login endpoint"
+});
+
+router.get("/create", (ctx) => {
+  ctx.response.body = "Welcome to createuser endpoint"
+});
+
+router.get("/about", (ctx) => {
+  ctx.response.body = "Welcome to about endpoint"
+});
+
+router.get("/logout", (ctx) => {
+  ctx.response.body = "Welcome to logout endpoint"
+});
+
+
+
+app.use(router.routes());
+app.use(router.allowedMethods());
+
+console.log("Oak server is running on http://localhost:8000");
+
+await app.listen({ port: 8000 });
+
